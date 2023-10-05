@@ -30,6 +30,6 @@ jobs:
       - name: Build with Maven
         working-directory: Assignment3
         run: mvn clean install
-      # - name: Running test cases
-      #   working-directory: Assignment3
-      #   # run: mvn test -Dtest=HealthCheckIntegrationTest
+      - name: Running test cases
+        working-directory: Assignment3
+        run: mvn test -Dtest= IntegrationTest
