@@ -98,6 +98,10 @@ public class AssignmentController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PatchMapping("v1/assignments")
+    public ResponseEntity<String> patchAssignment(){
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("405-Method Not Allowed");
+    }
 
 
 
