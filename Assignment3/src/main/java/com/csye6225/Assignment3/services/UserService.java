@@ -28,15 +28,15 @@ public class UserService {
     public void loadDataFromCsv() {
         System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
 
-        try (CSVReader csvReader = new CSVReader(new FileReader("Assignment3/src/main/resources/static/opt/users.csv"))) {
+        try (CSVReader csvReader = new CSVReader(new FileReader("../opt/users.csv"))) {
 
             String[] line;
             csvReader.readNext();
             while ((line = csvReader.readNext()) != null) {
-                String username = line[0]; // Assuming the username is in the first column
+                String username = line[0];
                 String lastName = line[1];
-                String email = line[2]; // Assuming the password is in the second column
-                String password = line[3];
+                String email = line[2]; // Assuming the email is in the user column
+                String password = line[3];// Password as Password
 
                 // Check if the user already exists
                 Optional<User> existingUser = userRepository.findByEmail(email);
@@ -50,9 +50,6 @@ public class UserService {
                     newUser.setAccountUpdated(LocalDateTime.now());
                     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                     newUser.setPassword(passwordEncoder.encode(password));
-//                    newUser.setId(1L);
-//                    newUser.setPassword(password);
-                    // Set other fields if needed
                     userRepository.save(newUser);
                 }
             }
