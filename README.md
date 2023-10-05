@@ -11,3 +11,7 @@ git commit
 git push origin branchname
 
 Run the workflow when a PR is created
+
+Integration Test is written as IntegrationTest
+
+mvn test -Dtest=IntegrationTest
