@@ -32,4 +32,4 @@ jobs:
         run: mvn clean install
       - name: Running test cases
         working-directory: Assignment3
-        run: mvn test -Dtest= IntegrationTest
+        run: mvn test = IntegrationTest
