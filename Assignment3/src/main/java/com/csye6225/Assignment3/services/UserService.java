@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Service
 public class UserService {
     private final UserRepository userRepository;
 
@@ -28,7 +27,7 @@ public class UserService {
     public void loadDataFromCsv() {
         System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
 
-        try (CSVReader csvReader = new CSVReader(new FileReader("../opt/users.csv"))) {
+        try (CSVReader csvReader = new CSVReader(new FileReader(System.getProperty("user.dir")+"/opt/users.csv"))) {
 
             String[] line;
             csvReader.readNext();

@@ -1,3 +1,4 @@
 first_name,last_name,email,password
 john,doe,john.doe@example.com,password123
 jane,doe,jane.doe@example.com,password456
+src/main/resources/static/opt/users.csv
