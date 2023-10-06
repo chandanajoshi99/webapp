@@ -56,4 +56,8 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CsvValidationException e) {
-            thr
+            throw new RuntimeException(e);
+        }
+    }
+}
+
