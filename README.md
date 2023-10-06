@@ -1,17 +1,26 @@
 # webapp
 
-Commands to run
+ 
+ Git Commands 
+ git clone <File-name.git>
+ Open the file and Commands to build the Application:
+ mvn clean install
 
-mvn clean install
+ Push your cahnges to the forked repo's Branch
+ Then Create a Pull Request to Organization Main
+ Sync with the main to forked main
 
-For Git 
-git checkout -b branchname
-git add
-git commit
-git push origin branchname
+ For Databases
+ Start Postgres: brew services start postgres
 
-Run the workflow when a PR is created
+ Postman
+ http://localhost:8080/v1/assignments 
 
-Integration Test is written as IntegrationTest
+ Give Get, Post, Put, Delete works as expected
+ Get - Get teh Assignments
+ Post- Create Assignment
+ Put - Update Assignment({/id})
+ Delete- Delete Assignment(/{id})
+ For Patch 405 Method Not Found
 
-mvn test -Dtest=IntegrationTest
+
