@@ -30,6 +30,7 @@ public class UserService {
 
         try (CSVReader csvReader = new CSVReader(new FileReader(System.getProperty("user.dir") + "/Assignment3/src/main/resources/static/opt/users.csv"))) {
 
+
             String[] line;
             csvReader.readNext();
             while ((line = csvReader.readNext()) != null) {
@@ -56,9 +57,13 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (CsvValidationException e) {
+
             {
                 throw new RuntimeException(e);
             }
         }
     }
+
 }
+
+
