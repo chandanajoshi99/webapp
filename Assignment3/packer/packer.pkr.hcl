@@ -35,6 +35,7 @@ source "amazon-ebs" "my-ami" {
   instance_type   = "t2.micro"
   source_ami      = "${var.source_ami}"
   ssh_username    = "admin"
+  ami_users       = ["889683117020"]
 }
 
 
@@ -51,8 +52,13 @@ build {
     source      = "../target/Assignment3-0.0.1-SNAPSHOT.jar"
     destination = "/tmp/Assignment3-0.0.1-SNAPSHOT.jar"
   }
+  provisioner "file" {
+    source      = "../opt/users.csv"
+    destination = "/tmp/users.csv"
+  }
   provisioner "shell" {
     inline = [
+      "sudo mv /tmp/users.csv /opt/users.csv",
       "sudo mv /tmp/Assignment3-0.0.1-SNAPSHOT.jar /opt/Assignment3-0.0.1-SNAPSHOT.jar"
     ]
   }

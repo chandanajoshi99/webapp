@@ -28,7 +28,8 @@ public class UserService {
     public void loadDataFromCsv() {
         System.out.println("Current Working Directory: " + System.getProperty("user.dir"));
 
-        try (CSVReader csvReader = new CSVReader(new FileReader(System.getProperty("user.dir") + "/opt/users.csv"))) {
+        try (CSVReader csvReader = new CSVReader(new FileReader(System.getProperty("user.dir") + "/users.csv"))) {
+
 
 
             String[] line;
