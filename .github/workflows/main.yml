@@ -50,5 +50,5 @@ jobs:
 
       - name: Running Packer template validation
         working-directory: Assignment3/packer
-        run: packer validate packer/aws-debian.pkr.hcl
+        run: packer validate packer.pkr.hcl
 
