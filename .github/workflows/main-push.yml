@@ -30,3 +30,26 @@ jobs:
       - name: Running test cases
         working-directory: Assignment3
         run: mvn test -Dtest=IntegrationTest
+
+      - name: Building Jar file
+        working-directory: Assignment3
+        run: mvn package -Dmaven.test.skip=true
+      - name: Checking AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+          aws-region: us-east-1
+
+      - name: Installing packer provisioners
+        working-directory: Assignment3/packer
+        run: packer init packer.pkr.hcl
+
+      - name: Formatting packer
+        working-directory: Assignment3/packer
+        run: packer fmt -check packer.pkr.hcl
+
+      - name: Running Packer template validation
+        working-directory: Assignment3/packer
+        run: packer build -color=false -on-error=abort packer/aws-debian.pkr.hcl
+
