@@ -50,5 +50,6 @@ jobs:
 
       - name: Running Packer template validation
         working-directory: Assignment3/packer
-        run: packer build -color=false -on-error=abort packer/packer.pkr.hcl
+        run: packer build -color=false -on-error=abort packer.pkr.hcl
+
 
