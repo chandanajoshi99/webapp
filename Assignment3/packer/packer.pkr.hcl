@@ -32,9 +32,9 @@ source "amazon-ebs" "my-ami" {
   ami_name        = "Cloud_1"
   ami_description = "AMI for CSYE 6225 (Cloud Computing)"
   profile         = "dev"
-  instance_type = "t2.micro"
-  source_ami    = "${var.source_ami}"
-  ssh_username  = "admin"
+  instance_type   = "t2.micro"
+  source_ami      = "${var.source_ami}"
+  ssh_username    = "admin"
 }
 
 
@@ -48,7 +48,7 @@ build {
     script = "myscript.sh"
   }
   provisioner "file" {
-    source = "../target/Assignment3-0.0.1-SNAPSHOT.jar"
+    source      = "../target/Assignment3-0.0.1-SNAPSHOT.jar"
     destination = "/tmp/Assignment3-0.0.1-SNAPSHOT.jar"
   }
   provisioner "shell" {
