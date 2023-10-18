@@ -29,7 +29,7 @@ variable "subnet_id" {
 
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
-  ami_name        = "Cloud_1"
+  ami_name        = "Cloud_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "AMI for CSYE 6225 (Cloud Computing)"
   profile         = "dev"
   instance_type   = "t2.micro"
