@@ -24,15 +24,15 @@ public class AssignmentController {
     private JSONValidatorService JSONValidatorService;
 
     @GetMapping("/healthz")
-    public ResponseEntity<Void> databaseConnector() {
-        try {
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .header("Cache-Control", "no-cache, no-store, must-revalidate")
-                    .header("Pragma", "no-cache")
-                    .header("X-Content-Type-Options", "no-sniff")
-                    .build();
-        } catch (Exception e) {
+    public ResponseEntity<Void> databaseConnector(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara) {
+       try{
+                return ResponseEntity.status(HttpStatus.OK)
+                        .header("Cache-Control", "no-cache, no-store, must-revalidate")
+                        .header("Pragma", "no-cache")
+                        .header("X-Content-Type-Options", "no-sniff")
+                        .build();
+            }
+       catch (Exception e) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                     .header("Cache-Control", "no-cache")
                     .header("Pragma", "no-cache")
@@ -79,9 +79,14 @@ public class AssignmentController {
 
     @DeleteMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> deleteAssignment(@PathVariable String id){
+        try {
 
-        return assignmentService.deleteAssignment(id) ?
-                ResponseEntity.status(204).build() : ResponseEntity.status(404).build();
+            return assignmentService.deleteAssignment(id) ?
+                    ResponseEntity.status(204).build() : ResponseEntity.status(403).build();
+        }
+        catch (Exception e){
+            return  new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
     @PutMapping("v1/assignments/{id}")
     public ResponseEntity<Assignment> updateAssignment( @PathVariable(value = "id") String Id,@RequestBody String body){
@@ -102,8 +107,4 @@ public class AssignmentController {
     public ResponseEntity<String> patchAssignment(){
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("405-Method Not Allowed");
     }
-
-
-
-
 }
