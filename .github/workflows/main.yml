@@ -3,7 +3,7 @@ name: Main PR Workflow
 on:
   pull_request:
     branches:
-       [ main ]
+      - main
 
 jobs:
   build:
@@ -30,6 +30,7 @@ jobs:
       - name: Running test cases
         working-directory: Assignment3
         run: mvn test -Dtest=IntegrationTest
+
       - name: Building Jar file
         working-directory: Assignment3
         run: mvn package -Dmaven.test.skip=true
