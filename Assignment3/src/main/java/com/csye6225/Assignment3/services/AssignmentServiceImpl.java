@@ -32,7 +32,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public void createAssignment(JsonNode reqNode){
+    public void createAssignment(JsonNode reqNode) {
         Assignment assignment = new Assignment();
         assignment.setName(reqNode.get("name").textValue());
         assignment.setPoints(reqNode.get("points").intValue());
@@ -51,7 +51,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 
     @Override
-    public Assignment getOneAssignment(String id){
+    public Assignment getOneAssignment(String id) {
         return assignmentRepository.findById(id);
     }
 
@@ -65,9 +65,9 @@ public class AssignmentServiceImpl implements AssignmentService {
     public boolean deleteAssignment(String id) {
 
         Assignment assignment = assignmentRepository.findById(id);
-        if (assignment ==  null)
+        if (assignment == null)
             return false;
-        if (assignment.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())){
+        if (assignment.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
             Query query = entityManager.createQuery("delete from Assignment a WHERE a.id=:id");
             query.setParameter("id", id);
             query.executeUpdate();
@@ -81,11 +81,16 @@ public class AssignmentServiceImpl implements AssignmentService {
     public Assignment updateAssignment(String id, JsonNode body) {
         Assignment assignment1 = assignmentRepository
                 .findById(id);
-        assignment1.setName(body.get("name").textValue());
-        assignment1.setPoints(body.get("points").intValue());
-        assignment1.setNumber_of_Attempts(body.get("number_of_attempts").intValue());
-        assignmentRepository.save(assignment1);
-        return assignment1;
+        if (assignment1.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+
+            assignment1.setName(body.get("name").textValue());
+            assignment1.setPoints(body.get("points").intValue());
+            assignment1.setNumber_of_Attempts(body.get("number_of_attempts").intValue());
+            assignmentRepository.save(assignment1);
+            Query query = entityManager.createQuery("update Assignment a set Assignment = assignmentCreated where a.id =id");
+            return assignment1;
+        }
+        return null;
 
     }
 
