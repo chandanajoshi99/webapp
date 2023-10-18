@@ -1,4 +1,4 @@
-name: Main PR Workflow
+name: Main Push Workflow
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Java-Build
+    name: Java-Build on Push
     runs-on: ubuntu-latest
 
     steps:
