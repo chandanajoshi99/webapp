@@ -40,9 +40,10 @@ jobs:
             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
             aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
             aws-region: us-east-1
+
       - name: Installing packer provisioners
-        working-directory: packer
-        run: packer init packer.pkr.hcl
+        working-directory: Assignment3/packer
+
 
       - name: Formatting packer
         working-directory: packer
