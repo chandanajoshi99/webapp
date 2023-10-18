@@ -45,9 +45,10 @@ jobs:
         run: packer init packer.pkr.hcl
 
       - name: Formatting packer
-        working-directory: packer
+        working-directory: Assignment3/packer
         run: packer fmt -check packer.pkr.hcl
 
       - name: Running Packer template validation
+        working-directory: Assignment3/packer
         run: packer validate packer/aws-debian.pkr.hcl
 
