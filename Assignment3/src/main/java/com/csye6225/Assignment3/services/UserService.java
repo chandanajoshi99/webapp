@@ -30,8 +30,6 @@ public class UserService {
 
         try (CSVReader csvReader = new CSVReader(new FileReader(System.getProperty("user.dir") + "/users.csv"))) {
 
-
-
             String[] line;
             csvReader.readNext();
             while ((line = csvReader.readNext()) != null) {
