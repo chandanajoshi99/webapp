@@ -27,14 +27,24 @@ variable "subnet_id" {
   default = "subnet-0f100f76292a200be"
 }
 
+variable "profile" {
+  type    = string
+  default = "dev"
+}
+variable "instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+
+
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "Cloud_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "AMI for CSYE 6225 (Cloud Computing)"
-  profile         = "dev"
-  instance_type   = "t2.micro"
+  profile         = "${var.profile}"
+  instance_type   = "${var.instance_type}"
   source_ami      = "${var.source_ami}"
-  ssh_username    = "admin"
+  ssh_username    = "${var.ssh_username}"
   ami_users       = ["889683117020"]
 }
 

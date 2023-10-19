@@ -11,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @Slf4j
@@ -88,20 +91,26 @@ public class AssignmentController {
             return  new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
     }
-    @PutMapping("v1/assignments/{id}")
-    public ResponseEntity<Assignment> updateAssignment( @PathVariable(value = "id") String Id,@RequestBody String body){
-        try {
-            JsonNode assignment = JSONValidatorService.validateJSON(body, SCHEMA_PATH);
-
-            assignmentService.updateAssignment(Id, assignment);
-
-            System.out.println(assignment);
-            return ResponseEntity.status(201).build();
+    @PutMapping("/v1/assignments/{id}")
+    public ResponseEntity<Object> updateAssignments(@RequestBody String requestBody,
+                                                    @PathVariable String id){
+        JsonNode requestJson = JSONValidatorService.validateJSON(requestBody, SCHEMA_PATH);
+        log.info("Validated JSON String");
+        Assignment assignment = new Assignment();
+        assignment.setName(requestJson.get("name").textValue());
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+//        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy", Locale.ENGLISH);
+        LocalDateTime date = LocalDateTime.parse(requestJson.get("deadline").textValue(), inputFormatter);
+//        String formattedDate = outputFormatter.format(date);
+        assignment.setDeadline(date);
+        assignment.setPoints(requestJson.get("points").intValue());
+        assignment.setAssignmentUpdated(LocalDateTime.now());
+        if (!assignmentService.updateAssignment(id, assignment)){
+            return ResponseEntity.status(404).build();
         }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        log.info("Updated Assignment in Database");
+        return ResponseEntity.status(204).build();
+
     }
     @PatchMapping("v1/assignments")
     public ResponseEntity<String> patchAssignment(){

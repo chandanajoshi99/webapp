@@ -38,13 +38,11 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignment.setPoints(reqNode.get("points").intValue());
         assignment.setNumber_of_Attempts(reqNode.get("number_of_attempts").intValue());
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
-//        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy", Locale.ENGLISH);
         LocalDateTime date = LocalDateTime.parse(reqNode.get("deadline").textValue(), inputFormatter);
-//        String formattedDate = outputFormatter.format(date);
         assignment.setDeadline(date);
         assignment.setAssignmentCreated(LocalDateTime.now());
         assignment.setAssignmentUpdated(LocalDateTime.now());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); //to get Authentication
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         assignment.setOwnerEmail(authentication.getName());
         assignmentRepository.save(assignment);
     }
@@ -75,23 +73,22 @@ public class AssignmentServiceImpl implements AssignmentService {
         }
         return false;
     }
-
-
     @Override
-    public Assignment updateAssignment(String id, JsonNode body) {
+    public boolean updateAssignment(String id, Assignment requestBody) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assignment assignment1 = assignmentRepository
                 .findById(id);
-        if (assignment1.getOwnerEmail().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-
-            assignment1.setName(body.get("name").textValue());
-            assignment1.setPoints(body.get("points").intValue());
-            assignment1.setNumber_of_Attempts(body.get("number_of_attempts").intValue());
-            assignmentRepository.save(assignment1);
-            Query query = entityManager.createQuery("update Assignment a set Assignment = assignmentCreated where a.id =id");
-            return assignment1;
+        if (assignment1 == null){
+            return false;
         }
-        return null;
-
+        if (authentication.getPrincipal().equals(assignment1.getOwnerEmail())){
+            assignment1.setName(requestBody.getName());
+            assignment1.setPoints(requestBody.getPoints());
+            assignment1.setNumber_of_Attempts(requestBody.getNumber_of_Attempts());
+            return assignmentRepository.save(assignment1) != null ? true : false;
+        }
+        else
+            return false;
     }
 
 
