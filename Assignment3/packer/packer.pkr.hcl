@@ -36,7 +36,6 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "Cloud_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
