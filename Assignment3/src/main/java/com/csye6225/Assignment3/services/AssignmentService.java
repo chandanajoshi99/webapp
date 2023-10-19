@@ -14,6 +14,6 @@ public interface AssignmentService {
 
     boolean deleteAssignment(String id);
 
-    Assignment updateAssignment(String id, JsonNode body);
+    boolean updateAssignment(String id, Assignment requestBody);
 
 }
