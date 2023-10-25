@@ -44,7 +44,7 @@ source "amazon-ebs" "my-ami" {
   instance_type   = "${var.instance_type}"
   source_ami      = "${var.source_ami}"
   ssh_username    = "${var.ssh_username}"
-  ami_users       = ["889683117020"]
+  ami_users         = ["889683117020"]
 }
 
 
