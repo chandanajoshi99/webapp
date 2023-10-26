@@ -65,10 +65,24 @@ build {
     source      = "../opt/users.csv"
     destination = "/tmp/users.csv"
   }
+  provisioner "file" {
+    source      = "cloud.service"
+    destination = "/tmp/cloud.service"
+  }
+  provisioner "file"{
+    source ="application.properties"
+    destination = "/tmp/application.properties"
+  }
   provisioner "shell" {
     inline = [
       "sudo mv /tmp/users.csv /opt/users.csv",
-      "sudo mv /tmp/Assignment3-0.0.1-SNAPSHOT.jar /opt/Assignment3-0.0.1-SNAPSHOT.jar"
+      "sudo mv /tmp/Assignment3-0.0.1-SNAPSHOT.jar /opt/Assignment3-0.0.1-SNAPSHOT.jar",
+      "sudo mv /tmp/cloud.service /etc/systemd/system/cloud.service",
+      "sudo cp /tmp/application.properties /opt/application.properties",
+      "sudo groupadd csye6225",
+      "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable cloud"
     ]
   }
 }
