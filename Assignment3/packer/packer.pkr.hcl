@@ -69,8 +69,8 @@ build {
     source      = "cloud.service"
     destination = "/tmp/cloud.service"
   }
-  provisioner "file"{
-    source ="application.properties"
+  provisioner "file" {
+    source      = "application.properties"
     destination = "/tmp/application.properties"
   }
   provisioner "shell" {
