@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.springframework.web.client.RestTemplate;
@@ -33,12 +34,18 @@ public class AssignmentController {
     @Autowired
     private JSONValidatorService JSONValidatorService;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+
     @GetMapping("/healthz")
     public ResponseEntity<Void> databaseConnector(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara) {
         String path = "/healthz";
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + path);
        try{
+
+           jdbcTemplate.queryForObject("SELECT 9", Integer.class);
                 logger.info("Database Connected");
                 return ResponseEntity.status(HttpStatus.OK)
                         .header("Cache-Control", "no-cache, no-store, must-revalidate")
