@@ -4,12 +4,18 @@ import com.csye6225.Assignment3.entity.Assignment;
 import com.csye6225.Assignment3.services.AssignmentService;
 import com.csye6225.Assignment3.services.JSONValidatorService;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.timgroup.statsd.StatsDClient;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,16 +25,27 @@ import java.util.Locale;
 @RestController
 @Slf4j
 public class AssignmentController {
-
+    @Autowired
+    private StatsDClient client;
+    private static final Logger logger = LoggerFactory.getLogger(AssignmentController.class);
     private static final String SCHEMA_PATH = "static/schema.json";
     @Autowired
     private AssignmentService assignmentService;
     @Autowired
     private JSONValidatorService JSONValidatorService;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+
     @GetMapping("/healthz")
     public ResponseEntity<Void> databaseConnector(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara) {
+        String path = "/healthz";
+        String method = HttpMethod.GET.toString();
+        client.increment("api.calls." + method + path);
        try{
+           jdbcTemplate.queryForObject("SELECT 9", Integer.class);
+                logger.info("Database Connected");
                 return ResponseEntity.status(HttpStatus.OK)
                         .header("Cache-Control", "no-cache, no-store, must-revalidate")
                         .header("Pragma", "no-cache")
@@ -48,26 +65,41 @@ public class AssignmentController {
     @GetMapping("/v1/assignments")
     public ResponseEntity<Object> getAllAssignments(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara){
         if (reqStr != null || reqPara !=null){
-
+            logger.error("Parameters are Given");
             return ResponseEntity.status(400).build();
         }
-        List<Assignment> list = assignmentService.getAllAssignments();
-        return ResponseEntity.ok(list);
+        String path = "/v1/assignments";
+        String method = HttpMethod.GET.toString();
+        client.increment("api.calls." + method + path);
+
+                try {
+            List<Assignment> list = assignmentService.getAllAssignments();
+            logger.info("HTTP GET request to {} returned status code 200" );
+            return ResponseEntity.ok(list);
+        }
+        catch (Exception e){
+            logger.error("Error Occurred while making GET Request : "+e.getMessage());
+            return ResponseEntity.status(404).build();
+        }
+//        List<Assignment> list = assignmentService.getAllAssignments();
+//        return ResponseEntity.ok(list);
     }
 
     @PostMapping("/v1/assignments")
     public ResponseEntity<String> createAssignment(@RequestBody String requestStr){
+        String path = "/v1/assignments";
+        String method = HttpMethod.POST.toString();
+        client.increment("api.calls." + method + path);
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
             JsonNode requestJson = JSONValidatorService.validateJSON(requestStr, SCHEMA_PATH);
-            log.info("Validated JSON String");
             assignmentService.createAssignment(requestJson);
-            log.info("Created Assignment in Database");
+            logger.info("CREATED ASSIGNMENT");
             return ResponseEntity.status(201).build();
         }
         catch (Exception e){
-            log.error(e.getMessage());
+            logger.error(e.getMessage());
             return ResponseEntity.status(400).build();
         }
 
@@ -82,6 +114,9 @@ public class AssignmentController {
 
     @DeleteMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> deleteAssignment(@PathVariable String id){
+        String path = "/v1/assignments";
+        String method = HttpMethod.DELETE.toString();
+        client.increment("api.calls." + method + path);
         try {
 
             return assignmentService.deleteAssignment(id) ?
@@ -94,8 +129,11 @@ public class AssignmentController {
     @PutMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> updateAssignments(@RequestBody String requestBody,
                                                     @PathVariable String id){
+        String path = "/v1/assignments";
+        String method = HttpMethod.PUT.toString();
+        client.increment("api.calls." + method + path);
         JsonNode requestJson = JSONValidatorService.validateJSON(requestBody, SCHEMA_PATH);
-        log.info("Validated JSON String");
+        log.debug("Validated JSON String");
         Assignment assignment = new Assignment();
         assignment.setName(requestJson.get("name").textValue());
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
@@ -114,6 +152,9 @@ public class AssignmentController {
     }
     @PatchMapping("v1/assignments")
     public ResponseEntity<String> patchAssignment(){
+        String path = "/v1/assignments";
+        String method = HttpMethod.PATCH.toString();
+        client.increment("api.calls." + method + path);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("405-Method Not Allowed");
     }
 }
