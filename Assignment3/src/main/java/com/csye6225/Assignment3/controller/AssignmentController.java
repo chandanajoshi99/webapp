@@ -51,6 +51,7 @@ public class AssignmentController {
         String path = "/healthz";
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + path);
+       try{
 
            jdbcTemplate.queryForObject("SELECT 9", Integer.class);
                 logger.info("Database Connected");
@@ -145,7 +146,6 @@ public class AssignmentController {
 //        }
 
         logger.atInfo().log("Deleted Assignment in Database");
-
         return assignmentService.deleteAssignment(id) ?
                 ResponseEntity.status(204).build() : ResponseEntity.status(404).build();
     }
