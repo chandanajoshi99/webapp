@@ -52,6 +52,7 @@ public class AssignmentController {
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + path);
        try{
+
            jdbcTemplate.queryForObject("SELECT 9", Integer.class);
                 logger.info("Database Connected");
                 return ResponseEntity.status(HttpStatus.OK)
@@ -135,7 +136,6 @@ public class AssignmentController {
         String path = "/v1/assignments";
         String method = HttpMethod.DELETE.toString();
         client.increment("api.calls." + method + path);
-
 //        try {
 //
 //            return assignmentService.deleteAssignment(id) ?
@@ -145,6 +145,7 @@ public class AssignmentController {
 //            return  new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 //        }
 
+        logger.atInfo().log("Deleted Assignment in Database");
         return assignmentService.deleteAssignment(id) ?
                 ResponseEntity.status(204).build() : ResponseEntity.status(404).build();
     }
