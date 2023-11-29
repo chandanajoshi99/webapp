@@ -4,6 +4,7 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.csye6225.Assignment3.entity.Assignment;
 import com.csye6225.Assignment3.entity.SNSMessage;
@@ -50,8 +51,9 @@ public class SubmissionService implements SubmissionServiceImpl{
 
     }
 
+
     @Override
-    public SubmissionResponse submitAssignment(UUID id, JsonNode requestBody) {
+    public SubmissionResponse submitAssignment(UUID id, JsonNode requestBody, int contentLength) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Assignment assignment1 = assignmentRepository
                 .findById(String.valueOf(id));
@@ -77,27 +79,34 @@ public class SubmissionService implements SubmissionServiceImpl{
         submission.setAccountEmail(authentication.getName());
         submission = submissionRepository.save(submission);
         log.atDebug().log("Submission: {}", submission);
+        boolean status = false;
+        if (contentLength < 1){
+            status = false;
+        }
+        else{
+            status = true;
+        }
 
         Regions regions = Regions.US_EAST_1;
 
-        val snsClient = AmazonSNSClient.builder()
-                .withRegion(regions).withCredentials(new AWSCredentialsProvider() {
-                    @Override
-                    public void refresh() {
-
-                    }
-                    @Override
-                    public com.amazonaws.auth.AWSCredentials getCredentials() {
-                        return new BasicAWSCredentials(
-                                AWS_ACCESS_KEY_ID,
-                                AWS_SECRET_ACCESS_KEY
-                        );
-                    }
-                }).build();
+        val snsClient = AmazonSNSClientBuilder.defaultClient();
+//                .withRegion(regions).withCredentials(new AWSCredentialsProvider() {
+//                    @Override
+//                    public void refresh() {
+//
+//                    }
+//                    @Override
+//                    public com.amazonaws.auth.AWSCredentials getCredentials() {
+//                        return new BasicAWSCredentials(
+//                                AWS_ACCESS_KEY_ID,
+//                                AWS_SECRET_ACCESS_KEY
+//                        );
+//                    }
+//                }).build();
         log.atDebug().log("SNS Client: {}", snsClient);
         SNSMessage snsMessage = new SNSMessage();
         snsMessage.setSubmissionUrl(submission.getSubmissionLink());
-        snsMessage.setStatus("SUCCESS");
+        snsMessage.setStatus(status ? "SUCCESS" : "FAILURE");
         snsMessage.setUserEmail(authentication.getName());
         snsMessage.setAssignmentId(String.valueOf(assignment1.getId()));
         ObjectMapper objectMapper = new ObjectMapper();

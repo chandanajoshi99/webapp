@@ -8,6 +8,7 @@ import com.csye6225.Assignment3.services.JSONValidatorService;
 import com.csye6225.Assignment3.services.SubmissionService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.timgroup.statsd.StatsDClient;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,13 +184,15 @@ public class AssignmentController {
 
     @PostMapping("/v1/assignments/{id}/submission")
     public ResponseEntity<SubmissionResponse> submitAssignment(@RequestBody String requestBody,
-                                                               @PathVariable String id)  {
+                                                               @PathVariable String id, HttpServletRequest request)  {
 //        String path = "/v1/assignments";
 //        String method = HttpMethod.PUT.toString();
 //        client.increment("api.calls." + method + path);
         JsonNode requestJson = JSONValidatorService.validateJSON(requestBody, SUBMISSION_SCHEMA_PATH);
         log.atDebug().log("Validated JSON String" + requestJson);
-        SubmissionResponse submission = submissionService.submitAssignment(UUID.fromString(id), requestJson);
+        String headers = request.getHeader("Content-Length");
+        int length = Integer.parseInt(headers);
+        SubmissionResponse submission = submissionService.submitAssignment(UUID.fromString(id), requestJson, length);
         log.atDebug().log("Submitted Assignment");
         if (submission == null){
             logger.atError().log("Could Not Submit");

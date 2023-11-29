@@ -10,6 +10,6 @@ public interface SubmissionServiceImpl {
 
 
 
-        SubmissionResponse submitAssignment(UUID id, JsonNode requestBody) throws Exception;
+        SubmissionResponse submitAssignment(UUID id, JsonNode requestBody, int contentLength) throws Exception;
 
 }
