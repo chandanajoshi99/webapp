@@ -10,6 +10,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment,Long> {
 
     Assignment findById(String id);
 
+    void deleteById(String id);
+
     //Assignment findByIdAndOwnerEmail(String id, String ownerEmail);
 
 
