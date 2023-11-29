@@ -1,8 +1,11 @@
 package com.csye6225.Assignment3.controller;
 
 import com.csye6225.Assignment3.entity.Assignment;
+import com.csye6225.Assignment3.response.AssignmentResponse;
+import com.csye6225.Assignment3.response.SubmissionResponse;
 import com.csye6225.Assignment3.services.AssignmentService;
 import com.csye6225.Assignment3.services.JSONValidatorService;
+import com.csye6225.Assignment3.services.SubmissionService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.timgroup.statsd.StatsDClient;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @RestController
 @Slf4j
@@ -29,6 +33,7 @@ public class AssignmentController {
     private StatsDClient client;
     private static final Logger logger = LoggerFactory.getLogger(AssignmentController.class);
     private static final String SCHEMA_PATH = "static/schema.json";
+    private static final String SUBMISSION_SCHEMA_PATH = "static/submission-schema.json";
     @Autowired
     private AssignmentService assignmentService;
     @Autowired
@@ -36,6 +41,9 @@ public class AssignmentController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private SubmissionService submissionService;
 
 
     @GetMapping("/healthz")
@@ -65,25 +73,35 @@ public class AssignmentController {
 
     @GetMapping("/v1/assignments")
     public ResponseEntity<Object> getAllAssignments(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara){
-        if (reqStr != null || reqPara !=null){
-            logger.error("Parameters are Given");
-            return ResponseEntity.status(400).build();
-        }
+//        if (reqStr != null || reqPara !=null){
+//            logger.error("Parameters are Given");
+//            return ResponseEntity.status(400).build();
+//        }
+//        String path = "/v1/assignments";
+//        String method = HttpMethod.GET.toString();
+//        client.increment("api.calls." + method + path);
+//
+//                try {
+//            List<Assignment> list = assignmentService.getAllAssignments();
+//            logger.info("HTTP GET request to {} returned status code 200" );
+//            return ResponseEntity.ok(list);
+//        }
+//        catch (Exception e){
+//            logger.error("Error Occurred while making GET Request : "+e.getMessage());
+//            return ResponseEntity.status(404).build();
+//        }
+//        List<Assignment> list = assignmentService.getAllAssignments();
+//        return ResponseEntity.ok(list);
         String path = "/v1/assignments";
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + path);
+        if (reqStr != null || reqPara !=null){
+            logger.atError().log("Request Body or Request Parameter is not null");
 
-                try {
-            List<Assignment> list = assignmentService.getAllAssignments();
-            logger.info("HTTP GET request to {} returned status code 200" );
-            return ResponseEntity.ok(list);
+            return ResponseEntity.status(400).build();
         }
-        catch (Exception e){
-            logger.error("Error Occurred while making GET Request : "+e.getMessage());
-            return ResponseEntity.status(404).build();
-        }
-//        List<Assignment> list = assignmentService.getAllAssignments();
-//        return ResponseEntity.ok(list);
+        List<AssignmentResponse> list = assignmentService.getAllAssignments();
+        return ResponseEntity.ok(list);
     }
 
     @PostMapping("/v1/assignments")
@@ -118,14 +136,18 @@ public class AssignmentController {
         String path = "/v1/assignments";
         String method = HttpMethod.DELETE.toString();
         client.increment("api.calls." + method + path);
-        try {
+//        try {
+//
+//            return assignmentService.deleteAssignment(id) ?
+//                    ResponseEntity.status(204).build() : ResponseEntity.status(403).build();
+//        }
+//        catch (Exception e){
+//            return  new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+//        }
 
-            return assignmentService.deleteAssignment(id) ?
-                    ResponseEntity.status(204).build() : ResponseEntity.status(403).build();
-        }
-        catch (Exception e){
-            return  new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        }
+        logger.atInfo().log("Deleted Assignment in Database");
+        return assignmentService.deleteAssignment(id) ?
+                ResponseEntity.status(204).build() : ResponseEntity.status(404).build();
     }
     @PutMapping("/v1/assignments/{id}")
     public ResponseEntity<Object> updateAssignments(@RequestBody String requestBody,
@@ -157,5 +179,24 @@ public class AssignmentController {
         String method = HttpMethod.PATCH.toString();
         client.increment("api.calls." + method + path);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("405-Method Not Allowed");
+    }
+
+    @PostMapping("/v1/assignments/{id}/submission")
+    public ResponseEntity<SubmissionResponse> submitAssignment(@RequestBody String requestBody,
+                                                               @PathVariable String id)  {
+//        String path = "/v1/assignments";
+//        String method = HttpMethod.PUT.toString();
+//        client.increment("api.calls." + method + path);
+        JsonNode requestJson = JSONValidatorService.validateJSON(requestBody, SUBMISSION_SCHEMA_PATH);
+        log.atDebug().log("Validated JSON String" + requestJson);
+        SubmissionResponse submission = submissionService.submitAssignment(UUID.fromString(id), requestJson);
+        log.atDebug().log("Submitted Assignment");
+        if (submission == null){
+            logger.atError().log("Could Not Submit");
+            return ResponseEntity.status(404).build();
+        }
+        log.info("Validated JSON String");
+        return ResponseEntity.status(201).body(submission);
+
     }
 }
