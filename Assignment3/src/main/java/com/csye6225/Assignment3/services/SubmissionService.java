@@ -36,12 +36,7 @@ public class SubmissionService implements SubmissionServiceImpl{
 
     private final SubmissionRepository submissionRepository;
 
-    @Value("${AWS_SECRET_ACCESS_KEY}")
-    private String AWS_SECRET_ACCESS_KEY;
 
-
-    @Value("${AWS_ACCESS_KEY_ID}")
-    private String AWS_ACCESS_KEY_ID;
 
 
 
@@ -90,19 +85,6 @@ public class SubmissionService implements SubmissionServiceImpl{
         Regions regions = Regions.US_EAST_1;
 
         val snsClient = AmazonSNSClientBuilder.defaultClient();
-//                .withRegion(regions).withCredentials(new AWSCredentialsProvider() {
-//                    @Override
-//                    public void refresh() {
-//
-//                    }
-//                    @Override
-//                    public com.amazonaws.auth.AWSCredentials getCredentials() {
-//                        return new BasicAWSCredentials(
-//                                AWS_ACCESS_KEY_ID,
-//                                AWS_SECRET_ACCESS_KEY
-//                        );
-//                    }
-//                }).build();
         log.atDebug().log("SNS Client: {}", snsClient);
         SNSMessage snsMessage = new SNSMessage();
         snsMessage.setSubmissionUrl(submission.getSubmissionLink());
