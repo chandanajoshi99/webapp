@@ -36,12 +36,7 @@ public class SubmissionService implements SubmissionServiceImpl{
 
     private final SubmissionRepository submissionRepository;
 
-    @Value("${AWS_SECRET_ACCESS_KEY}")
-    private String AWS_SECRET_ACCESS_KEY;
 
-
-    @Value("${AWS_ACCESS_KEY_ID}")
-    private String AWS_ACCESS_KEY_ID;
 
 
 
