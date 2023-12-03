@@ -36,16 +36,11 @@ public class SubmissionService implements SubmissionServiceImpl{
 
     private final SubmissionRepository submissionRepository;
 
-
-
-
-
     public SubmissionService(AssignmentRepository assignmentRepository, SubmissionRepository submissionRepository) {
         this.assignmentRepository = assignmentRepository;
         this.submissionRepository = submissionRepository;
 
     }
-
 
     @Override
     public SubmissionResponse submitAssignment(UUID id, JsonNode requestBody, int contentLength) {
@@ -55,9 +50,7 @@ public class SubmissionService implements SubmissionServiceImpl{
         if (assignment1 == null) {
             throw new AssignmentNotFoundException("Not Found");
         }
-//        if (!authentication.getPrincipal().equals(assignment1.getOwnerEmail())) {
-//            throw new CannotAccessException("Cannot access the requested Data");
-//        }
+      
         if (assignment1.getNumber_of_Attempts() < assignment1.getSubmissions().stream().filter(submission -> submission.getAccountEmail().equals(authentication.getName())).count()){
             throw new CannotSubmitException("No more attempts left");
         }
@@ -85,19 +78,7 @@ public class SubmissionService implements SubmissionServiceImpl{
         Regions regions = Regions.US_EAST_1;
 
         val snsClient = AmazonSNSClientBuilder.defaultClient();
-//                .withRegion(regions).withCredentials(new AWSCredentialsProvider() {
-//                    @Override
-//                    public void refresh() {
-//
-//                    }
-//                    @Override
-//                    public com.amazonaws.auth.AWSCredentials getCredentials() {
-//                        return new BasicAWSCredentials(
-//                                AWS_ACCESS_KEY_ID,
-//                                AWS_SECRET_ACCESS_KEY
-//                        );
-//                    }
-//                }).build();
+
         log.atDebug().log("SNS Client: {}", snsClient);
         SNSMessage snsMessage = new SNSMessage();
         snsMessage.setSubmissionUrl(submission.getSubmissionLink());
@@ -118,8 +99,6 @@ public class SubmissionService implements SubmissionServiceImpl{
 
 
         snsClient.publish(publishRequest);
-
-//        ==================================================================================================================
 
         log.atInfo().log("SUBMITTED ASSIGNMENT");
         log.atInfo().log("SENT NOTIFICATION");
