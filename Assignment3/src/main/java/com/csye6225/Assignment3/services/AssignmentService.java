@@ -1,6 +1,7 @@
 package com.csye6225.Assignment3.services;
 
 import com.csye6225.Assignment3.entity.Assignment;
+import com.csye6225.Assignment3.response.AssignmentResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface AssignmentService {
 
     Assignment getOneAssignment(String id);
 
-    List<Assignment> getAllAssignments();
+    List<AssignmentResponse> getAllAssignments();
 
     boolean deleteAssignment(String id);
 

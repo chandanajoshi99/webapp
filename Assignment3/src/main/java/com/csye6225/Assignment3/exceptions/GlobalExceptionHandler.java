@@ -16,16 +16,32 @@ public class GlobalExceptionHandler {
         return "{error: \"" + jsonFormatException.getMessage() + "\"}";
     }
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(PlanNotFoundException.class)
-//    @ResponseBody
-//    public String handlePlanNotFoundException(PlanNotFoundException planNotFoundException){
-//        return "{error: \" Plan not found in database\"}";
-//    }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(AssignmentNotFoundException.class)
+    @ResponseBody
+    public String handleAssignmentNotFoundException(AssignmentNotFoundException assignmentNotFoundException){
+        return "{error: \""+ assignmentNotFoundException.getMessage() + "\"}";
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(CannotAccessException.class)
+    @ResponseBody
+    public String handleAccessException(CannotAccessException cannotAccessException){
+        return "{error: \"" + cannotAccessException.getMessage() + "\"}";
+
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CannotSubmitException.class)
+    @ResponseBody
+    public String handleCannotSubmitException(CannotSubmitException cannotSubmitException){
+        return "{error: \"" + cannotSubmitException.getMessage() + "\"}";
+    }
+
 //
 //    @ResponseStatus(HttpStatus.NOT_MODIFIED)
-//    @ExceptionHandler(PlanNotUpdatedException.class)
-//    public void handlePlanNotUpdatedException(PlanNotUpdatedException planNotUpdatedException) {
+//    @ExceptionHandler(AssignmentNotUpdated.class)
+//    public void handlePlanNotUpdatedException(AssignmentNotUpdated assignmentNotUpdated) {
 //    }
 
 //    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 409

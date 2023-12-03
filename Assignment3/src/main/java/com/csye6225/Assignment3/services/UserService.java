@@ -35,7 +35,7 @@ public class UserService {
             while ((line = csvReader.readNext()) != null) {
                 String username = line[0];
                 String lastName = line[1];
-                String email = line[2]; // Assuming the email is in the user column
+                String email = line[2];
                 String password = line[3];// Password as Password
 
                 // Check if the user already exists
