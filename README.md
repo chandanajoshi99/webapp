@@ -25,4 +25,7 @@
 
  ReadMe Update for demo
 
-
+ command to import the certificate from Local to AWS Certificate Manager: 
+aws acm import-certificate --profile demo
+ --certificate fileb://demo_cjoshi_tech.crt
+ --private-key fileb://private.key
