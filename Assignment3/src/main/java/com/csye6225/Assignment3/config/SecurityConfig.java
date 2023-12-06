@@ -18,7 +18,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/healthz").permitAll())
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/v3/assignments","v3/assignments/*/submission","v3/assignments/*").authenticated())
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/v2/assignments","v2/assignments/*/submission","v2/assignments/*").authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
