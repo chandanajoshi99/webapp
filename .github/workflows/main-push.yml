@@ -89,23 +89,20 @@ jobs:
           --auto-scaling-group-name $EC2_AUTOSCALING_GROUP \
       - name: wait on instance refresh completion
         run: |
-          asg_name="<your-auto-scaling-group-name>"
-          while true; do
+            asg_name="<your-auto-scaling-group-name>"
+            while true; do
               refresh_status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name ${{ env.EC2_AUTOSCALING_GROUP }} --query 'InstanceRefreshes[0].Status' --output text)
-          
+    
               if [ "$refresh_status" == "Successful" ]; then
-                  echo "Instance refresh completed successfully."
-                  break
+                echo "Instance refresh completed successfully."
+                break
               elif [ "$refresh_status" == "Cancelled" ]; then
-                  echo "Instance refresh failed."
-                  exit 1
-              elif [ "$refresh_status" == “Cancelled” ]; then
-                  echo "Instance refresh Cancelled.”
-                  exit 1
+                echo "Instance refresh Cancelled."
+                exit 1
               else
-                  echo "Instance refresh in progress..."
-                  sleep 30
+                echo "Instance refresh in progress..."
+                sleep 30
               fi
-          done
+            done
 
 
