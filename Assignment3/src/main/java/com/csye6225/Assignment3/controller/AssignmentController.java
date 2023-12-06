@@ -72,13 +72,13 @@ public class AssignmentController {
     }
 
 
-    @GetMapping("/v1/assignments")
+    @GetMapping("/v3/assignments")
     public ResponseEntity<Object> getAllAssignments(@RequestBody(required = false) String reqStr, @RequestParam(required = false) String reqPara){
 //        if (reqStr != null || reqPara !=null){
 //            logger.error("Parameters are Given");
 //            return ResponseEntity.status(400).build();
 //        }
-//        String path = "/v1/assignments";
+//        String path = "/v3/assignments";
 //        String method = HttpMethod.GET.toString();
 //        client.increment("api.calls." + method + path);
 //
@@ -93,7 +93,7 @@ public class AssignmentController {
 //        }
 //        List<Assignment> list = assignmentService.getAllAssignments();
 //        return ResponseEntity.ok(list);
-        String path = "/v1/assignments";
+        String path = "/v3/assignments";
         String method = HttpMethod.GET.toString();
         client.increment("api.calls." + method + path);
         if (reqStr != null || reqPara !=null){
@@ -105,9 +105,9 @@ public class AssignmentController {
         return ResponseEntity.ok(list);
     }
 
-    @PostMapping("/v1/assignments")
+    @PostMapping("/v3/assignments")
     public ResponseEntity<String> createAssignment(@RequestBody String requestStr){
-        String path = "/v1/assignments";
+        String path = "/v3/assignments";
         String method = HttpMethod.POST.toString();
         client.increment("api.calls." + method + path);
         try {
@@ -125,16 +125,16 @@ public class AssignmentController {
 
     }
 
-    @GetMapping("/v1/assignments/{id}")
+    @GetMapping("/v3/assignments/{id}")
     public ResponseEntity<Object> getOne(@PathVariable String id){
         Assignment assignment = assignmentService.getOneAssignment(id);
 
         return ResponseEntity.status(200).body(assignment);
     }
 
-    @DeleteMapping("/v1/assignments/{id}")
+    @DeleteMapping("/v3/assignments/{id}")
     public ResponseEntity<Object> deleteAssignment(@PathVariable String id){
-        String path = "/v1/assignments";
+        String path = "/v3/assignments";
         String method = HttpMethod.DELETE.toString();
         client.increment("api.calls." + method + path);
 //        try {
@@ -150,10 +150,10 @@ public class AssignmentController {
         return assignmentService.deleteAssignment(id) ?
                 ResponseEntity.status(204).build() : ResponseEntity.status(404).build();
     }
-    @PutMapping("/v1/assignments/{id}")
+    @PutMapping("/v3/assignments/{id}")
     public ResponseEntity<Object> updateAssignments(@RequestBody String requestBody,
                                                     @PathVariable String id){
-        String path = "/v1/assignments";
+        String path = "/v3/assignments";
         String method = HttpMethod.PUT.toString();
         client.increment("api.calls." + method + path);
         JsonNode requestJson = JSONValidatorService.validateJSON(requestBody, SCHEMA_PATH);
@@ -174,7 +174,7 @@ public class AssignmentController {
         return ResponseEntity.status(204).build();
 
     }
-    @PatchMapping("v1/assignments")
+    @PatchMapping("v3/assignments")
     public ResponseEntity<String> patchAssignment(){
         String path = "/v1/assignments";
         String method = HttpMethod.PATCH.toString();
@@ -182,10 +182,10 @@ public class AssignmentController {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("405-Method Not Allowed");
     }
 
-    @PostMapping("/v1/assignments/{id}/submission")
+    @PostMapping("/v3/assignments/{id}/submission")
     public ResponseEntity<SubmissionResponse> submitAssignment(@RequestBody String requestBody,
                                                                @PathVariable String id, HttpServletRequest request)  {
-//        String path = "/v1/assignments";
+//        String path = "/v3/assignments";
 //        String method = HttpMethod.PUT.toString();
 //        client.increment("api.calls." + method + path);
         JsonNode requestJson = JSONValidatorService.validateJSON(requestBody, SUBMISSION_SCHEMA_PATH);
